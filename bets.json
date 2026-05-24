@@ -11,7 +11,7 @@
           "id": "a",
           "name": "girthymcslammer",
           "description": "Curretnly number 1 in the world!",
-          "pool": 6491
+          "pool": 22652
         },
         {
           "id": "b",
@@ -25,7 +25,8 @@
         { "discord_id": "1399043564771741770", "fighter": "b", "amount": 4000 },
         { "discord_id": "748858744158552066", "fighter": "a", "amount": 100 },
         { "discord_id": "564493353643671562", "fighter": "a", "amount": 6390 },
-        { "discord_id": "237547243916230657", "fighter": "a", "amount": 1 }
+        { "discord_id": "237547243916230657", "fighter": "a", "amount": 1 },
+        { "discord_id": "1100520242075148378", "fighter": "a", "amount": 16161 }
       ]
     }
     
