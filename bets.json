@@ -11,13 +11,13 @@
           "id": "a",
           "name": "girthymcslammer",
           "description": "Curretnly number 1 in the world!",
-          "pool": 22652
+          "pool": 23152
         },
         {
           "id": "b",
           "name": "sleepy",
           "description": "The event winner...",
-          "pool": 7230
+          "pool": 7730
         }
       ],
       "bets": [
@@ -26,7 +26,9 @@
         { "discord_id": "748858744158552066", "fighter": "a", "amount": 100 },
         { "discord_id": "564493353643671562", "fighter": "a", "amount": 6390 },
         { "discord_id": "237547243916230657", "fighter": "a", "amount": 1 },
-        { "discord_id": "1100520242075148378", "fighter": "a", "amount": 16161 }
+        { "discord_id": "1100520242075148378", "fighter": "a", "amount": 16161 },
+        { "discord_id": "611517884295938048", "fighter": "a", "amount": 500 },
+        { "discord_id": "611517884295938048", "fighter": "b", "amount": 500 }
       ]
     }
     
