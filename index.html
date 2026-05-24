@@ -228,20 +228,7 @@ footer a:hover{text-decoration:underline}
 <div class="section-divider">Active Matches</div>
 <div id="matches-container"></div>
 
-<div class="admin-section">
-  <div class="admin-hdr" onclick="toggleAdmin()">
-    <div class="admin-title">Admin Panel</div>
-    <div class="atog" id="atog">[ + expand ]</div>
-  </div>
-  <div class="admin-body" id="abody">
-    <div id="admin-mc"></div>
-    <div class="jhint">
-      <strong style="color:var(--text2)">To save changes permanently:</strong> use the Export button below, then replace <code>bets.json</code> in your GitHub repo.<br>
-      Changes made here are live on screen but reset on reload unless you update the file.<br><br>
-      <button class="bsm badd" style="font-size:10px;padding:4px 10px" onclick="exportJSON()">Export bets.json</button>
-    </div>
-  </div>
-</div>
+
 
 <footer>WAR OF DOTS UNOFFICIAL BETTING — DM <strong style="color:var(--gold)">CuriosAnt</strong> to place bets — <a href="https://warofdots.net" target="_blank">Play the game</a></footer>
 </div>
@@ -286,7 +273,7 @@ function calcPays(m,wid){
   if(!wp)return[];
   return ws.map(b=>({discord_id:b.discord_id,bet:b.amount,win:Math.floor(b.amount/wp*lp),total:b.amount+Math.floor(b.amount/wp*lp)}));
 }
-function render(){renderMatches();renderAdmin()}
+function render(){renderMatches();}
 function renderMatches(){
   const c=document.getElementById('matches-container');c.innerHTML='';
   DATA.matches.forEach((m,i)=>{
@@ -322,55 +309,7 @@ function renderMatches(){
     </div>`;
   });
 }
-function renderAdmin(){
-  const c=document.getElementById('admin-mc');c.innerHTML='';
-  DATA.matches.forEach((m,i)=>{
-    const fa=m.fighters[0],fb=m.fighters[1];
-    const br=m.bets.map((b,bi)=>`<tr><td>${b.discord_id}</td><td style="color:${b.fighter==='a'?'var(--blue2)':'var(--red2)'}">${b.fighter==='a'?fa.name:fb.name}</td><td>${fmt(b.amount)}</td><td><button class="bsm bdel" onclick="removeBet('${m.id}',${bi})">✕</button></td></tr>`).join('');
-    c.innerHTML+=`<div class="amatch">
-      <div class="amtitle">#${i+1} — ${m.title}</div>
-      <div class="agrid">
-        <div class="afield"><label>Title</label><input type="text" value="${m.title}" onchange="uf('${m.id}','title',this.value)"></div>
-        <div class="afield"><label>Status</label><select onchange="uf('${m.id}','status',this.value)"><option value="open" ${m.status==='open'?'selected':''}>Open</option><option value="closed" ${m.status==='closed'?'selected':''}>Closed</option><option value="finished" ${m.status==='finished'?'selected':''}>Finished</option><option value="draw" ${m.status==='draw'?'selected':''}>Draw</option></select></div>
-        <div class="afield"><label>Blue name</label><input type="text" value="${fa.name}" onchange="uff('${m.id}',0,'name',this.value)"></div>
-        <div class="afield"><label>Red name</label><input type="text" value="${fb.name}" onchange="uff('${m.id}',1,'name',this.value)"></div>
-        <div class="afield" style="grid-column:1/-1"><label>Blue description</label><input type="text" value="${fa.description}" onchange="uff('${m.id}',0,'description',this.value)"></div>
-        <div class="afield" style="grid-column:1/-1"><label>Red description</label><input type="text" value="${fb.description}" onchange="uff('${m.id}',1,'description',this.value)"></div>
-        <div class="afield"><label>Deadline</label><input type="datetime-local" value="${m.deadline?m.deadline.slice(0,16):''}" onchange="uf('${m.id}','deadline',this.value)"></div>
-        <div class="afield"><label>Winner</label><select onchange="uf('${m.id}','winner',this.value||null)"><option value="" ${!m.winner?'selected':''}>-- none --</option><option value="a" ${m.winner==='a'?'selected':''}>${fa.name} (Blue)</option><option value="b" ${m.winner==='b'?'selected':''}>${fb.name} (Red)</option></select></div>
-      </div>
-      <div style="font-family:var(--fm);font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Bets (${m.bets.length})</div>
-      <table class="atbl"><thead><tr><th>Discord ID</th><th>Fighter</th><th>Amount</th><th></th></tr></thead><tbody>${br}</tbody></table>
-      <div class="addrow">
-        <input type="text" placeholder="discord#0000" id="nd-${m.id}">
-        <select id="nf-${m.id}"><option value="a">${fa.name}</option><option value="b">${fb.name}</option></select>
-        <input type="number" placeholder="amount" id="na-${m.id}" style="width:90px">
-        <button class="bsm badd" onclick="addBet('${m.id}')">+ Add</button>
-      </div>
-      <div class="annsec">
-        <h4>Calculate Payouts</h4>
-        <button class="bann bwa" onclick="showPays('${m.id}','a')">${fa.name} wins</button>
-        <button class="bann bwb" onclick="showPays('${m.id}','b')">${fb.name} wins</button>
-        <button class="bann bdraw" onclick="showPays('${m.id}','draw')">Draw</button>
-        <div id="pr-${m.id}"></div>
-      </div>
-    </div>`;
-  });
-  c.innerHTML+=`<button class="bet-btn" style="margin-top:8px;font-size:.9rem" onclick="addMatch()">+ Add New Match</button>`;
-}
-function uf(id,f,v){const m=DATA.matches.find(m=>m.id===id);if(m){m[f]=v;renderMatches()}}
-function uff(id,i,f,v){const m=DATA.matches.find(m=>m.id===id);if(m){m.fighters[i][f]=v;renderMatches()}}
-function addBet(id){
-  const m=DATA.matches.find(m=>m.id===id);if(!m)return;
-  const d=document.getElementById('nd-'+id).value.trim(),f=document.getElementById('nf-'+id).value,a=parseInt(document.getElementById('na-'+id).value);
-  if(!d||!a||a<=0)return;
-  m.bets.push({discord_id:d,fighter:f,amount:a});render();
-}
-function removeBet(id,bi){const m=DATA.matches.find(m=>m.id===id);if(m){m.bets.splice(bi,1);render()}}
-function addMatch(){
-  DATA.matches.push({id:'match'+Date.now(),title:'NEW MATCH',status:'open',deadline:new Date(Date.now()+7*86400000).toISOString().slice(0,16),winner:null,fighters:[{id:'a',name:'Blue Fighter',description:'Edit this description',pool:0},{id:'b',name:'Red Fighter',description:'Edit this description',pool:0}],bets:[]});
-  render();
-}
+
 function showPays(id,result){
   const m=DATA.matches.find(m=>m.id===id);if(!m)return;
   const el=document.getElementById('pr-'+id);
