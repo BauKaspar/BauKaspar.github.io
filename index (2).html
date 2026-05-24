@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>War of Dots — Unofficial Betting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f0a;--bg2:#13160f;--bg3:#1a1e14;
+  --border:#2a2e22;--border2:#3a3e30;
+  --gold:#d4a843;--gold2:#f0c060;
+  --red:#cc3333;--red2:#e85555;
+  --blue:#3355cc;--blue2:#5577ee;
+  --green2:#66cc80;--yellow:#e8c840;
+  --text:#e8e4d0;--text2:#9a9680;--text3:#5a5848;
+  --ft:'Bebas Neue',sans-serif;
+  --fm:'Share Tech Mono',monospace;
+  --fb:'Barlow',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:16px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+
+.map-hero{position:relative;width:100%;height:340px;overflow:hidden;border-bottom:3px solid var(--border2)}
+.map-hero img{width:100%;height:100%;object-fit:cover;object-position:center 30%;filter:saturate(0.8) brightness(0.5);display:block}
+.map-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(13,15,10,0.1) 0%,rgba(13,15,10,0.8) 100%);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:2rem}
+.site-tag{font-family:var(--fm);font-size:11px;color:var(--yellow);letter-spacing:5px;text-transform:uppercase;margin-bottom:0.4rem;text-shadow:0 1px 8px rgba(0,0,0,0.9)}
+h1{font-family:var(--ft);font-size:clamp(3.5rem,12vw,7rem);line-height:0.9;letter-spacing:3px;color:var(--text);text-shadow:0 2px 20px rgba(0,0,0,0.9),0 0 60px rgba(212,168,67,0.2);text-align:center}
+h1 .sub{display:block;font-size:clamp(1rem,3.5vw,1.8rem);letter-spacing:8px;color:var(--gold);margin-top:0.15em}
+.dot-strip{display:flex;gap:10px;margin-top:1rem;align-items:center}
+.dr{width:14px;height:14px;border-radius:50%;background:var(--red);border:2px solid #000;box-shadow:0 0 8px rgba(204,51,51,0.6)}
+.db{width:14px;height:14px;border-radius:50%;background:var(--blue2);border:2px solid #000;box-shadow:0 0 8px rgba(51,85,204,0.6)}
+.dy{width:10px;height:10px;border-radius:50%;background:var(--yellow)}
+.dvs{font-family:var(--ft);font-size:1.2rem;color:var(--text3);margin:0 4px}
+
+.live-row{display:flex;align-items:center;justify-content:center;gap:16px;padding:0.6rem 0;border-bottom:1px solid var(--border);background:var(--bg2);flex-wrap:wrap}
+.live-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:11px;letter-spacing:2px;color:var(--green2);border:1px solid var(--green2);padding:3px 10px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green2);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.6)}}
+.wod-link{font-family:var(--fm);font-size:11px;color:var(--text3);letter-spacing:1px}
+.wod-link a{color:var(--gold);text-decoration:none}
+.wod-link a:hover{text-decoration:underline}
+
+.wrap{max-width:920px;margin:0 auto;padding:0 20px}
+
+.how-section{margin:2.5rem 0;border:1px solid var(--border);background:var(--bg2);position:relative;overflow:hidden}
+.how-section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue2),var(--red))}
+.how-inner{padding:1.5rem 2rem}
+.how-title{font-family:var(--ft);font-size:1.8rem;letter-spacing:2px;color:var(--gold);border-bottom:1px solid var(--border);padding-bottom:0.75rem;margin-bottom:1.25rem}
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem}
+.how-step{display:flex;gap:12px}
+.sn{font-family:var(--ft);font-size:2.5rem;line-height:1;color:var(--border2);flex-shrink:0;width:36px;text-align:center}
+.st strong{display:block;font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--text);margin-bottom:3px}
+.st p{font-size:13px;color:var(--text2);line-height:1.5}
+.payout-box{margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1.25rem}
+.payout-box p{font-size:13px;color:var(--text2);line-height:1.6}
+.payout-box strong{color:var(--gold)}
+
+.section-divider{font-family:var(--ft);font-size:1.1rem;letter-spacing:4px;color:var(--text3);text-transform:uppercase;margin:2.5rem 0 1rem;display:flex;align-items:center;gap:12px}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.match-card{border:1px solid var(--border);background:var(--bg2);margin-bottom:1.5rem;position:relative;overflow:hidden}
+.match-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.status-open::before{background:linear-gradient(90deg,var(--blue2),var(--red))}
+.status-closed::before{background:var(--border2)}
+.status-finished::before{background:var(--green2)}
+.status-draw::before{background:var(--gold)}
+
+.match-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem 0.75rem;border-bottom:1px solid var(--border);gap:1rem;flex-wrap:wrap}
+.mhw{display:flex;align-items:center;gap:10px}
+.mnum{font-family:var(--ft);font-size:2rem;color:var(--border2);line-height:1}
+.mtitle{font-family:var(--ft);font-size:1.4rem;letter-spacing:2px;color:var(--text)}
+.mmeta{display:flex;align-items:center;gap:12px}
+.spill{font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border:1px solid}
+.s-open{color:var(--green2);border-color:var(--green2)}
+.s-closed{color:var(--text3);border-color:var(--border)}
+.s-finished{color:var(--gold);border-color:var(--gold)}
+.s-draw{color:var(--gold2);border-color:var(--gold2)}
+.countdown{font-family:var(--fm);font-size:11px;color:var(--text3);letter-spacing:1px}
+
+.fighters{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;padding:1.5rem;gap:1rem}
+.fname{font-family:var(--ft);font-size:clamp(1.6rem,5vw,2.4rem);letter-spacing:2px;line-height:1;margin-bottom:6px;word-break:break-word}
+.fa .fname{color:var(--blue2)}
+.fb .fname{color:var(--red2)}
+.fb{text-align:right}
+.fdot{width:16px;height:16px;border-radius:50%;border:2px solid #000;display:inline-block;vertical-align:middle;margin-right:5px}
+.fdesc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.fpl{font-family:var(--fm);font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;display:block}
+.fpa{font-family:var(--ft);font-size:1.8rem;letter-spacing:1px;line-height:1}
+.fa .fpa{color:var(--blue2)}
+.fb .fpa{color:var(--red)}
+.vsb{display:flex;align-items:center;justify-content:center;padding-top:0.5rem}
+.vs{font-family:var(--ft);font-size:2rem;color:var(--border2);letter-spacing:2px}
+.wtag{display:inline-block;font-family:var(--fm);font-size:9px;letter-spacing:2px;text-transform:uppercase;background:var(--green2);color:var(--bg);padding:2px 8px;margin-bottom:4px;font-weight:700}
+
+.bar-wrap{padding:0 1.5rem 1.5rem}
+.bar-labels{display:flex;justify-content:space-between;font-family:var(--fm);font-size:11px;color:var(--text3);margin-bottom:4px}
+.lbl-a{color:var(--blue2)}
+.lbl-b{color:var(--red2)}
+.bar-track{height:10px;background:var(--border);position:relative;overflow:hidden}
+.bfa{position:absolute;top:0;left:0;bottom:0;background:var(--blue2);transition:width .6s ease}
+.bfb{position:absolute;top:0;right:0;bottom:0;background:var(--red);transition:width .6s ease}
+.bdiv{position:absolute;top:0;bottom:0;width:2px;background:var(--bg);z-index:1;transition:left .6s ease}
+.tpool{text-align:center;margin-top:8px;font-family:var(--fm);font-size:11px;color:var(--text3);letter-spacing:1px}
+.tpool strong{color:var(--text2);font-size:13px}
+
+.bet-action{border-top:1px solid var(--border);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.bet-btn{font-family:var(--ft);font-size:1.1rem;letter-spacing:3px;background:var(--gold);color:var(--bg);border:none;padding:10px 28px;cursor:pointer;transition:background .15s,transform .1s;text-transform:uppercase}
+.bet-btn:hover{background:var(--gold2);transform:translateY(-1px)}
+.bet-btn:active{transform:translateY(0)}
+.bet-note{font-family:var(--fm);font-size:11px;color:var(--text3);letter-spacing:1px}
+
+.fin-banner{background:var(--bg3);border-top:1px solid var(--border);padding:1rem 1.5rem;text-align:center}
+.win-ann{font-family:var(--ft);font-size:1.8rem;letter-spacing:3px;color:var(--green2);display:block;margin-bottom:4px}
+.fin-sub{font-family:var(--fm);font-size:11px;color:var(--text3);letter-spacing:1px}
+
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);max-width:520px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue2),var(--red))}
+.modal-hdr{padding:1.5rem;border-bottom:1px solid var(--border)}
+.modal-title{font-family:var(--ft);font-size:1.8rem;letter-spacing:2px;color:var(--gold)}
+.modal-sub{font-size:12px;color:var(--text3);font-family:var(--fm);letter-spacing:1px;margin-top:4px}
+.modal-body{padding:1.5rem}
+.istep{display:flex;gap:12px;margin-bottom:1.25rem}
+.inum{font-family:var(--ft);font-size:2rem;color:var(--gold);line-height:1;flex-shrink:0;width:28px}
+.itxt{font-size:13px;color:var(--text2);line-height:1.6}
+.itxt strong{color:var(--text)}
+.code-block{background:var(--bg3);border:1px solid var(--border);font-family:var(--fm);font-size:13px;color:var(--gold2);padding:10px 14px;margin:6px 0;letter-spacing:.5px}
+.mcl{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;font-family:var(--fm);line-height:1;transition:color .15s}
+.mcl:hover{color:var(--text)}
+.fc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem}
+.fc-btn{padding:10px;background:var(--bg3);border:1px solid var(--border);font-family:var(--ft);font-size:1rem;letter-spacing:2px;text-align:center;word-break:break-word}
+.fc-blue{color:var(--blue2);border-color:var(--blue2)}
+.fc-red{color:var(--red2);border-color:var(--red2)}
+.warn-box{background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.3);padding:10px 14px;margin-top:1rem;font-family:var(--fm);font-size:11px;color:var(--gold);letter-spacing:.5px;line-height:1.6}
+
+.admin-section{margin:3rem 0;border:1px solid var(--border);background:var(--bg2)}
+.admin-hdr{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
+.admin-hdr:hover{background:var(--bg3)}
+.admin-title{font-family:var(--ft);font-size:1.2rem;letter-spacing:3px;color:var(--text3);flex:1}
+.atog{font-family:var(--fm);font-size:14px;color:var(--text3)}
+.admin-body{display:none;padding:1.5rem}
+.admin-body.open{display:block}
+.amatch{border:1px solid var(--border);padding:1.25rem;margin-bottom:1rem;background:var(--bg3)}
+.amtitle{font-family:var(--ft);font-size:1.2rem;letter-spacing:2px;color:var(--text2);margin-bottom:1rem}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.afield label{display:block;font-family:var(--fm);font-size:10px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:4px}
+.afield input,.afield select{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--fm);font-size:13px;padding:7px 10px;outline:none;transition:border-color .15s}
+.afield input:focus,.afield select:focus{border-color:var(--gold)}
+.atbl{width:100%;border-collapse:collapse;font-family:var(--fm);font-size:12px;margin-top:1rem}
+.atbl th{text-align:left;color:var(--text3);font-weight:400;letter-spacing:1px;padding:4px 8px;border-bottom:1px solid var(--border);font-size:10px;text-transform:uppercase}
+.atbl td{padding:5px 8px;color:var(--text2);border-bottom:1px solid var(--border);font-size:11px}
+.atbl tr:last-child td{border-bottom:none}
+.addrow{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;margin-top:8px;align-items:end}
+.addrow input,.addrow select{background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--fm);font-size:12px;padding:6px 8px;outline:none}
+.addrow input:focus,.addrow select:focus{border-color:var(--gold)}
+.bsm{font-family:var(--fm);font-size:11px;letter-spacing:1px;padding:6px 14px;border:none;cursor:pointer;transition:all .15s}
+.badd{background:var(--gold);color:var(--bg)}
+.badd:hover{background:var(--gold2)}
+.bdel{background:var(--border);color:var(--text3);font-size:10px;padding:4px 8px}
+.bdel:hover{background:var(--red);color:var(--text)}
+.bann{font-family:var(--ft);font-size:1rem;letter-spacing:2px;padding:8px 20px;cursor:pointer;margin-right:8px;transition:all .15s;border:none}
+.bwa{background:var(--blue2);color:#fff}
+.bwa:hover{background:var(--blue)}
+.bwb{background:var(--red);color:var(--text)}
+.bwb:hover{background:var(--red2)}
+.bdraw{background:var(--border2);color:var(--text2)}
+.bdraw:hover{background:var(--text3);color:var(--text)}
+.presults{margin-top:1rem;background:var(--bg);border:1px solid var(--border);padding:1rem}
+.presults h4{font-family:var(--ft);letter-spacing:2px;color:var(--green2);font-size:1rem;margin-bottom:.75rem}
+.presults p{font-family:var(--fm);font-size:11px;color:var(--text2);margin-bottom:4px}
+.presults p strong{color:var(--gold)}
+.annsec{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)}
+.annsec h4{font-family:var(--fm);font-size:11px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:.75rem}
+.jhint{font-family:var(--fm);font-size:11px;color:var(--text3);margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);line-height:1.7}
+.jhint a{color:var(--gold);text-decoration:none}
+.jhint a:hover{text-decoration:underline}
+.jhint code{color:var(--gold2)}
+
+footer{border-top:1px solid var(--border);padding:2rem 0;text-align:center;margin-top:3rem;font-family:var(--fm);font-size:11px;color:var(--text3);letter-spacing:2px}
+footer a{color:var(--gold);text-decoration:none}
+footer a:hover{text-decoration:underline}
+@media(max-width:600px){.fighters{grid-template-columns:1fr auto 1fr}.fname{font-size:1.3rem}.agrid{grid-template-columns:1fr}.addrow{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div class="map-hero">
+  <img src="map.png" alt="War of Dots map">
+  <div class="map-hero-overlay">
+    <div class="site-tag">Unofficial Betting — Not affiliated with War of Dots</div>
+    <h1>WAR OF DOTS<span class="sub">Place Your Bets</span></h1>
+    <div class="dot-strip">
+      <div class="db"></div><div class="db"></div>
+      <span class="dvs">VS</span>
+      <div class="dr"></div><div class="dr"></div>
+      <div class="dy" style="margin-left:8px"></div><div class="dy"></div>
+    </div>
+  </div>
+</div>
+
+<div class="live-row">
+  <div class="live-badge"><div class="live-dot"></div> Bets are live</div>
+  <div class="wod-link">Play the game: <a href="https://warofdots.net" target="_blank">warofdots.net</a></div>
+</div>
+
+<div class="wrap">
+
+<section class="how-section">
+  <div class="how-inner">
+    <div class="how-title">How It Works</div>
+    <div class="how-grid">
+      <div class="how-step"><div class="sn">1</div><div class="st"><strong>Pick your dot</strong><p>Choose which player you think will win. Press "Place Bet" on any open match to see instructions.</p></div></div>
+      <div class="how-step"><div class="sn">2</div><div class="st"><strong>DM CuriosAnt</strong><p>Message CuriosAnt on Discord saying who you're backing and how much.</p></div></div>
+      <div class="how-step"><div class="sn">3</div><div class="st"><strong>Send your coins</strong><p>Go to #commands and type $give @CuriosAnt [amount] to send your bet via UnbelievaBot.</p></div></div>
+      <div class="how-step"><div class="sn">4</div><div class="st"><strong>Collect winnings</strong><p>If your pick wins, the loser's pool gets split among winners proportional to stake. Draws get full refunds.</p></div></div>
+    </div>
+    <div class="payout-box">
+      <p><strong>The payout formula:</strong> When a winner is declared, the losing side's entire pool is distributed to everyone who bet on the winner, proportional to their stake. Example: you bet 500, the total winning side bets were 2000 — you get 25% of the loser pool on top of your 500 back. In a draw, everyone gets their full bet refunded.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider">Active Matches</div>
+<div id="matches-container"></div>
+
+<div class="admin-section">
+  <div class="admin-hdr" onclick="toggleAdmin()">
+    <div class="admin-title">Admin Panel</div>
+    <div class="atog" id="atog">[ + expand ]</div>
+  </div>
+  <div class="admin-body" id="abody">
+    <div id="admin-mc"></div>
+    <div class="jhint">
+      <strong style="color:var(--text2)">To save changes permanently:</strong> use the Export button below, then replace <code>bets.json</code> in your GitHub repo.<br>
+      Changes made here are live on screen but reset on reload unless you update the file.<br><br>
+      <button class="bsm badd" style="font-size:10px;padding:4px 10px" onclick="exportJSON()">Export bets.json</button>
+    </div>
+  </div>
+</div>
+
+<footer>WAR OF DOTS UNOFFICIAL BETTING — DM <strong style="color:var(--gold)">CuriosAnt</strong> to place bets — <a href="https://warofdots.net" target="_blank">Play the game</a></footer>
+</div>
+
+<div class="modal-backdrop" id="bet-modal">
+  <div class="modal">
+    <button class="mcl" onclick="closeModal()">✕</button>
+    <div class="modal-hdr">
+      <div class="modal-title">How To Place Your Bet</div>
+      <div class="modal-sub" id="modal-match-name"></div>
+    </div>
+    <div class="modal-body">
+      <div class="istep"><div class="inum">1</div><div class="itxt">Pick who you're betting on:<div class="fc-grid" id="modal-fighters"></div></div></div>
+      <div class="istep"><div class="inum">2</div><div class="itxt"><strong>DM CuriosAnt on Discord</strong> and tell them:<div class="code-block" id="modal-dm"></div></div></div>
+      <div class="istep"><div class="inum">3</div><div class="itxt">Go to <strong>#commands</strong> and send:<div class="code-block">$give @CuriosAnt [amount]</div>This transfers the coins via UnbelievaBot.</div></div>
+      <div class="istep"><div class="inum">4</div><div class="itxt"><strong>Done.</strong> Your bet shows up on this page once confirmed. Betting closes when the timer reaches zero — no late entries accepted.</div></div>
+      <div class="warn-box">⚠ Community run, not affiliated with War of Dots. Server currency only via UnbelievaBot.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let DATA={matches:[]};
+async function loadData(){
+  try{const r=await fetch('bets.json?t='+Date.now());DATA=await r.json()}catch(e){}
+  render();
+}
+function cp(m){
+  const pa=m.bets.filter(b=>b.fighter==='a').reduce((s,b)=>s+b.amount,0);
+  const pb=m.bets.filter(b=>b.fighter==='b').reduce((s,b)=>s+b.amount,0);
+  return{a:pa||(m.fighters[0].pool||0),b:pb||(m.fighters[1].pool||0),total:(pa||(m.fighters[0].pool||0))+(pb||(m.fighters[1].pool||0))};
+}
+function fmt(n){return Number(n).toLocaleString()}
+function cd(dl){
+  const d=new Date(dl).getTime()-Date.now();if(d<=0)return'CLOSED';
+  const dd=Math.floor(d/86400000),h=Math.floor((d%86400000)/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);
+  if(dd>0)return dd+'d '+h+'h '+m+'m';if(h>0)return h+'h '+m+'m '+s+'s';return m+'m '+s+'s';
+}
+function calcPays(m,wid){
+  const ws=m.bets.filter(b=>b.fighter===wid),ls=m.bets.filter(b=>b.fighter!==wid);
+  const lp=ls.reduce((s,b)=>s+b.amount,0),wp=ws.reduce((s,b)=>s+b.amount,0);
+  if(!wp)return[];
+  return ws.map(b=>({discord_id:b.discord_id,bet:b.amount,win:Math.floor(b.amount/wp*lp),total:b.amount+Math.floor(b.amount/wp*lp)}));
+}
+function render(){renderMatches();renderAdmin()}
+function renderMatches(){
+  const c=document.getElementById('matches-container');c.innerHTML='';
+  DATA.matches.forEach((m,i)=>{
+    const p=cp(m);
+    const pA=p.total>0?(p.a/p.total*100).toFixed(1):50;
+    const pB=p.total>0?(p.b/p.total*100).toFixed(1):50;
+    const isOpen=m.status==='open'&&new Date(m.deadline)>new Date();
+    const fa=m.fighters[0],fb=m.fighters[1];
+    const wn=m.winner==='a'?fa.name:m.winner==='b'?fb.name:null;
+    const sc=isOpen?'open':m.status==='finished'?'finished':m.status==='draw'?'draw':'closed';
+    const sl=isOpen?'OPEN':m.status==='finished'?'FINISHED':m.status==='draw'?'DRAW':'CLOSED';
+    const wtA=m.winner==='a'?'<div class="wtag">WINNER</div>':'';
+    const wtB=m.winner==='b'?'<div class="wtag">WINNER</div>':'';
+    let banner='';
+    if(m.status==='finished'&&m.winner)banner=`<div class="fin-banner"><span class="win-ann">🏆 ${wn} WINS</span><span class="fin-sub">Payouts distributed</span></div>`;
+    else if(m.status==='draw')banner=`<div class="fin-banner"><span class="win-ann" style="color:var(--yellow)">DRAW — All bets refunded</span></div>`;
+    else if(!isOpen&&m.status!=='finished')banner=`<div class="fin-banner"><span class="win-ann" style="color:var(--text2);font-size:1.2rem">AWAITING RESULT</span><span class="fin-sub">Betting closed</span></div>`;
+    c.innerHTML+=`<div class="match-card status-${sc}">
+      <div class="match-header"><div class="mhw"><div class="mnum">#${String(i+1).padStart(2,'0')}</div><div class="mtitle">${m.title}</div></div>
+      <div class="mmeta"><span class="spill s-${sc}">${sl}</span>${isOpen?`<span class="countdown" id="cd-${m.id}">${cd(m.deadline)}</span>`:''}</div></div>
+      <div class="fighters">
+        <div class="fa">${wtA}<div class="fname"><span class="fdot" style="background:var(--blue2);border-color:#000;box-shadow:0 0 8px rgba(85,119,238,.5)"></span>${fa.name}</div><div class="fdesc">${fa.description}</div><span class="fpl">Pool</span><div class="fpa">${fmt(p.a)}</div></div>
+        <div class="vsb"><div class="vs">VS</div></div>
+        <div class="fb">${wtB}<div class="fname">${fb.name}<span class="fdot" style="background:var(--red);border-color:#000;box-shadow:0 0 8px rgba(204,51,51,.5);margin-left:5px;margin-right:0"></span></div><div class="fdesc">${fb.description}</div><span class="fpl" style="text-align:right">Pool</span><div class="fpa">${fmt(p.b)}</div></div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="lbl-a">${fa.name} ${pA}%</span><span class="lbl-b">${pB}% ${fb.name}</span></div>
+        <div class="bar-track"><div class="bfa" style="width:${pA}%"></div><div class="bfb" style="width:${pB}%"></div><div class="bdiv" style="left:${pA}%"></div></div>
+        <div class="tpool">Total pool: <strong>${fmt(p.total)}</strong> — ${m.bets.length} bets placed</div>
+      </div>
+      ${banner}
+      ${isOpen?`<div class="bet-action"><span class="bet-note">Deadline: ${new Date(m.deadline).toLocaleString()}</span><button class="bet-btn" onclick="openModal('${m.id}')">Place Bet</button></div>`:''}
+    </div>`;
+  });
+}
+function renderAdmin(){
+  const c=document.getElementById('admin-mc');c.innerHTML='';
+  DATA.matches.forEach((m,i)=>{
+    const fa=m.fighters[0],fb=m.fighters[1];
+    const br=m.bets.map((b,bi)=>`<tr><td>${b.discord_id}</td><td style="color:${b.fighter==='a'?'var(--blue2)':'var(--red2)'}">${b.fighter==='a'?fa.name:fb.name}</td><td>${fmt(b.amount)}</td><td><button class="bsm bdel" onclick="removeBet('${m.id}',${bi})">✕</button></td></tr>`).join('');
+    c.innerHTML+=`<div class="amatch">
+      <div class="amtitle">#${i+1} — ${m.title}</div>
+      <div class="agrid">
+        <div class="afield"><label>Title</label><input type="text" value="${m.title}" onchange="uf('${m.id}','title',this.value)"></div>
+        <div class="afield"><label>Status</label><select onchange="uf('${m.id}','status',this.value)"><option value="open" ${m.status==='open'?'selected':''}>Open</option><option value="closed" ${m.status==='closed'?'selected':''}>Closed</option><option value="finished" ${m.status==='finished'?'selected':''}>Finished</option><option value="draw" ${m.status==='draw'?'selected':''}>Draw</option></select></div>
+        <div class="afield"><label>Blue name</label><input type="text" value="${fa.name}" onchange="uff('${m.id}',0,'name',this.value)"></div>
+        <div class="afield"><label>Red name</label><input type="text" value="${fb.name}" onchange="uff('${m.id}',1,'name',this.value)"></div>
+        <div class="afield" style="grid-column:1/-1"><label>Blue description</label><input type="text" value="${fa.description}" onchange="uff('${m.id}',0,'description',this.value)"></div>
+        <div class="afield" style="grid-column:1/-1"><label>Red description</label><input type="text" value="${fb.description}" onchange="uff('${m.id}',1,'description',this.value)"></div>
+        <div class="afield"><label>Deadline</label><input type="datetime-local" value="${m.deadline?m.deadline.slice(0,16):''}" onchange="uf('${m.id}','deadline',this.value)"></div>
+        <div class="afield"><label>Winner</label><select onchange="uf('${m.id}','winner',this.value||null)"><option value="" ${!m.winner?'selected':''}>-- none --</option><option value="a" ${m.winner==='a'?'selected':''}>${fa.name} (Blue)</option><option value="b" ${m.winner==='b'?'selected':''}>${fb.name} (Red)</option></select></div>
+      </div>
+      <div style="font-family:var(--fm);font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Bets (${m.bets.length})</div>
+      <table class="atbl"><thead><tr><th>Discord ID</th><th>Fighter</th><th>Amount</th><th></th></tr></thead><tbody>${br}</tbody></table>
+      <div class="addrow">
+        <input type="text" placeholder="discord#0000" id="nd-${m.id}">
+        <select id="nf-${m.id}"><option value="a">${fa.name}</option><option value="b">${fb.name}</option></select>
+        <input type="number" placeholder="amount" id="na-${m.id}" style="width:90px">
+        <button class="bsm badd" onclick="addBet('${m.id}')">+ Add</button>
+      </div>
+      <div class="annsec">
+        <h4>Calculate Payouts</h4>
+        <button class="bann bwa" onclick="showPays('${m.id}','a')">${fa.name} wins</button>
+        <button class="bann bwb" onclick="showPays('${m.id}','b')">${fb.name} wins</button>
+        <button class="bann bdraw" onclick="showPays('${m.id}','draw')">Draw</button>
+        <div id="pr-${m.id}"></div>
+      </div>
+    </div>`;
+  });
+  c.innerHTML+=`<button class="bet-btn" style="margin-top:8px;font-size:.9rem" onclick="addMatch()">+ Add New Match</button>`;
+}
+function uf(id,f,v){const m=DATA.matches.find(m=>m.id===id);if(m){m[f]=v;renderMatches()}}
+function uff(id,i,f,v){const m=DATA.matches.find(m=>m.id===id);if(m){m.fighters[i][f]=v;renderMatches()}}
+function addBet(id){
+  const m=DATA.matches.find(m=>m.id===id);if(!m)return;
+  const d=document.getElementById('nd-'+id).value.trim(),f=document.getElementById('nf-'+id).value,a=parseInt(document.getElementById('na-'+id).value);
+  if(!d||!a||a<=0)return;
+  m.bets.push({discord_id:d,fighter:f,amount:a});render();
+}
+function removeBet(id,bi){const m=DATA.matches.find(m=>m.id===id);if(m){m.bets.splice(bi,1);render()}}
+function addMatch(){
+  DATA.matches.push({id:'match'+Date.now(),title:'NEW MATCH',status:'open',deadline:new Date(Date.now()+7*86400000).toISOString().slice(0,16),winner:null,fighters:[{id:'a',name:'Blue Fighter',description:'Edit this description',pool:0},{id:'b',name:'Red Fighter',description:'Edit this description',pool:0}],bets:[]});
+  render();
+}
+function showPays(id,result){
+  const m=DATA.matches.find(m=>m.id===id);if(!m)return;
+  const el=document.getElementById('pr-'+id);
+  if(result==='draw'){
+    let h='<div class="presults"><h4>DRAW — Refund Everyone</h4>';
+    m.bets.forEach(b=>{h+=`<p><strong>${b.discord_id}</strong> → refund <strong>${fmt(b.amount)}</strong></p>`});
+    el.innerHTML=h+'</div>';return;
+  }
+  const pays=calcPays(m,result);
+  if(!pays.length){el.innerHTML='<div class="presults"><h4>No bets on winner</h4></div>';return}
+  const wn=result==='a'?m.fighters[0].name:m.fighters[1].name;
+  let h=`<div class="presults"><h4>${wn.toUpperCase()} WINS — Payouts</h4><p style="color:var(--text3);margin-bottom:8px">Original bet + share of loser pool:</p>`;
+  pays.forEach(p=>{h+=`<p><strong>${p.discord_id}</strong> → ${fmt(p.bet)} + ${fmt(p.win)} = <strong style="color:var(--green2)">give ${fmt(p.total)}</strong></p>`});
+  h+='<p style="margin-top:8px;color:var(--text3);font-size:10px">Use $give @user [amount] for each in #commands</p></div>';
+  el.innerHTML=h;
+}
+function toggleAdmin(){
+  const b=document.getElementById('abody'),t=document.getElementById('atog');
+  b.classList.toggle('open');t.textContent=b.classList.contains('open')?'[ − collapse ]':'[ + expand ]';
+}
+function openModal(id){
+  const m=DATA.matches.find(m=>m.id===id);if(!m)return;
+  document.getElementById('modal-match-name').textContent=m.title;
+  document.getElementById('modal-fighters').innerHTML=`<div class="fc-btn fc-blue">${m.fighters[0].name}</div><div class="fc-btn fc-red">${m.fighters[1].name}</div>`;
+  document.getElementById('modal-dm').textContent='I want to bet [amount] on '+m.fighters[0].name+' (or '+m.fighters[1].name+')';
+  document.getElementById('bet-modal').classList.add('open');
+}
+function closeModal(){document.getElementById('bet-modal').classList.remove('open')}
+document.getElementById('bet-modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+function exportJSON(){
+  const bl=new Blob([JSON.stringify(DATA,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download='bets.json';a.click();
+}
+setInterval(()=>{DATA.matches.forEach(m=>{if(m.status==='open'){const e=document.getElementById('cd-'+m.id);if(e)e.textContent=cd(m.deadline)}})},1000);
+setInterval(loadData,30000);
+loadData();
+</script>
+</body>
+</html>

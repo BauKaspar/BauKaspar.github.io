@@ -1,0 +1,57 @@
+{
+  "matches": [
+    {
+      "id": "match1",
+      "title": "THE OPENER",
+      "status": "open",
+      "deadline": "2025-06-01T20:00:00",
+      "winner": null,
+      "fighters": [
+        {
+          "id": "a",
+          "name": "girthymcslammer",
+          "description": "The reigning chaos goblin. Known for making questionable decisions at 3am and somehow winning anyway. Never backs down, never looks both ways before crossing the street.",
+          "pool": 4200
+        },
+        {
+          "id": "b",
+          "name": "sleepy",
+          "description": "Deceptively dangerous. The name is a trap. Has been known to emerge from a 14-hour sleep and immediately destroy everyone in his path. Underestimate at your own risk.",
+          "pool": 2800
+        }
+      ],
+      "bets": [
+        { "discord_id": "420blazeit#0001", "fighter": "a", "amount": 1200 },
+        { "discord_id": "NightOwl#4242", "fighter": "a", "amount": 800 },
+        { "discord_id": "xX_d4rkness_Xx#9999", "fighter": "a", "amount": 500 },
+        { "discord_id": "PotatoKing#1337", "fighter": "a", "amount": 900 },
+        { "discord_id": "SleepyFan#0069", "fighter": "a", "amount": 800 },
+        { "discord_id": "TrustMeBro#7777", "fighter": "b", "amount": 1500 },
+        { "discord_id": "GamblerGuy#2222", "fighter": "b", "amount": 800 },
+        { "discord_id": "LongShot#5555", "fighter": "b", "amount": 500 }
+      ]
+    },
+    {
+      "id": "match2",
+      "title": "ROUND 2",
+      "status": "open",
+      "deadline": "2025-06-05T18:00:00",
+      "winner": null,
+      "fighters": [
+        {
+          "id": "a",
+          "name": "Player3",
+          "description": "Edit this description in bets.json. Put whatever you want here about this person.",
+          "pool": 0
+        },
+        {
+          "id": "b",
+          "name": "Player4",
+          "description": "Edit this description in bets.json too. Add their vibes, their reputation, their crimes.",
+          "pool": 0
+        }
+      ],
+      "bets": []
+    }
+  ]
+}
