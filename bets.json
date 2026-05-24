@@ -11,7 +11,7 @@
           "id": "a",
           "name": "girthymcslammer",
           "description": "Curretnly number 1 in the world!",
-          "pool": 100
+          "pool": 6490
         },
         {
           "id": "b",
@@ -23,7 +23,8 @@
       "bets": [
         { "discord_id": "834429489948786731", "fighter": "b", "amount": 3230 },
         { "discord_id": "1399043564771741770", "fighter": "b", "amount": 4000 },
-        { "discord_id": "748858744158552066", "fighter": "a", "amount": 100 }
+        { "discord_id": "748858744158552066", "fighter": "a", "amount": 100 },
+        { "discord_id": "564493353643671562", "fighter": "a", "amount": 6390 }
       ]
     }
     
