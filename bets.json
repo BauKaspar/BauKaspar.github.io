@@ -28,7 +28,8 @@
         { "discord_id": "237547243916230657", "fighter": "a", "amount": 1 },
         { "discord_id": "1100520242075148378", "fighter": "a", "amount": 16161 },
         { "discord_id": "611517884295938048", "fighter": "a", "amount": 500 },
-        { "discord_id": "611517884295938048", "fighter": "b", "amount": 500 }
+        { "discord_id": "611517884295938048", "fighter": "b", "amount": 500 },
+        { "discord_id": "805354717085433856", "fighter": "b", "amount": 500 }
       ]
     }
     
